@@ -50,7 +50,9 @@
   </ul>
 </body>
 <script>
-  const listStyleChangeStartY = 330
+  const listWrapper = document.getElementById("list-item-wrapper");
+  const listWrapperOffset = listWrapper.offsetTop
+  const listStyleChangeStartY = window.innerHeight - listWrapperOffset + window.innerHeight/2
   const listStyleChangeEndY = 2150
   const listItems = document.querySelectorAll('.list-item')
 
@@ -61,7 +63,7 @@
     if(document.getElementById("on")) document.getElementById("on").removeAttribute("id")
 
 
-    if(window.scrollY > listStyleChangeStartY && window.screenY < listStyleChangeEndY) {
+    if(window.scrollY > listStyleChangeStartY && window.scrollY < listStyleChangeEndY) {
       const valueIndex = Math.floor((window.scrollY - listStyleChangeStartY) / eachPixel)
       if(listItems[valueIndex]) listItems[valueIndex].id = "on"
     }
