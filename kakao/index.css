@@ -46,3 +46,71 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+body {
+	background-color: #111;
+}
+
+#main-img-wrapper {
+	padding-top: 139px;
+	text-align: center;
+}
+
+#intro-main {
+	display: flex;
+	flex-direction: column;
+	margin: 54px auto 140px;
+	align-items: center;
+	width: 300px;
+	justify-content: center;
+	color: white;
+	font-size: 34px;
+	font-weight: 900;
+	gap: 20px;
+}
+
+#join-us-text{
+	margin-top: 73px;
+	opacity: 0.6;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+#intro-main p {
+	text-align: center;
+}
+
+@keyframes keepDown {
+	from {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(-10px);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+
+#down-arrow-icon {
+	width: 33px;
+	animation: keepDown 1s infinite;
+}
+
+#list-item-wrapper {
+	margin: 0 auto 500px;
+	width: 600px;
+}
+
+.list-item#on{
+	color: white;
+}
+
+.list-item {
+	display: inline;
+	text-align: center;
+	font-size: 48px;
+	font-weight: 600;
+}

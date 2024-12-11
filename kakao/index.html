@@ -1,11 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="./index.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KAKAO ClONE</title>
 </head>
 <body>
-  
+  <div id="main-img-wrapper">
+    <img width="320" src="./coding_image.png" alt="coding_image">
+  </div>
+  <div id="intro-main">
+    <p>이미 모두의 은행 카카오뱅크,</p>
+    <p>함께 일해요.</p>
+    <p id="join-us-text">Join us!</p>
+    <img id="down-arrow-icon" src="./down-arrow.png" alt="down-arrow">
+  </div>
+  <ul id="list-item-wrapper">
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+    <li class="list-item">✌️류현식은어떻게강캐가되었나</li>
+  </ul>
 </body>
+<script>
+  const listStyleChangeStartY = 330
+  const listStyleChangeEndY = 2150
+  const listItems = document.querySelectorAll('.list-item')
+
+  const eachPixel = (listStyleChangeEndY - listStyleChangeStartY) / listItems.length
+
+
+  window.addEventListener("scroll", ()=> {
+    if(document.getElementById("on")) document.getElementById("on").removeAttribute("id")
+
+
+    if(window.scrollY > listStyleChangeStartY && window.screenY < listStyleChangeEndY) {
+      const valueIndex = Math.floor((window.scrollY - listStyleChangeStartY) / eachPixel)
+      if(listItems[valueIndex]) listItems[valueIndex].id = "on"
+    }
+  })
+
+</script>
 </html>
