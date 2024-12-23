@@ -128,3 +128,25 @@ body {
 	height: 310px;
 	transform: translate(80px, -13px) rotate(40deg);
 }
+
+#video-section {
+	margin-bottom: 1000px;
+}
+
+#video {
+	display: block;
+	margin: 0 auto;
+	height: 350px;
+}
+
+#fixed-description{
+	width: 622px;
+	text-align: end;
+	margin: 30px auto 0;
+	line-height: 50px;
+	color: white;
+	font-size: 35px;
+	font-weight: 600;
+	transform: translateY(100px);
+	opacity: 0;
+}
