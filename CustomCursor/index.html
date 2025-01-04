@@ -24,7 +24,14 @@
     </section>
 
     <section class="header">
-
+        <span class="circle" id="circle-1"></span>
+        <span class="circle" id="circle-2"></span>
+        <img id="cube__image_1" src="front_mini.png" alt="my_img" class="cube__image">
+        <img id="cube__image_2" src="front_mini.png" alt="my_img" class="cube__image">
+        <h1 class="header__title">
+            <div>RHSH1T</div>
+            <div>JUST HTML</div>
+        </h1>
     </section>
 
 </body>
@@ -82,6 +89,8 @@
         document.querySelector(".preloader__btn_hold").style.opacity = 1 - (scale - 1) / preloaderHideThresHold
     }
 
+    const header = document.querySelector(".header")
+
     preloaderBtn.addEventListener("mousedown", ()=> {
         intervalId = setInterval(() => {
             scale += 0.175;
@@ -89,8 +98,6 @@
             setPreloaderStyle(scale)
         
             if(scale >= 1 + preloaderHideThresHold) {
-                const header = document.querySelector(".header")
-
                 document.querySelector(".preloader").classList.add("hidden-area")
 
                 header.classList.add("shown-area")
@@ -112,8 +119,20 @@ preloaderBtn.addEventListener("mouseup", ()=> {
         if(scale <= 1){
             clearInterval(intervalId)
         }
-    })
+    }, 10)
 })
+
+header.addEventListener("mousemove", (e) => {
+    const xRelativeToHeader = e.clientX / header.clientWidth
+    const yRelativeToHeader = e.clientY / header.clientHeight
+
+    document.querySelector(".header__title").style.transform = `translate(${(xRelativeToHeader * -100)}px, ${yRelativeToHeader * -100}px)`
+    document.querySelector("#circle-1").style.transform = `translate(${xRelativeToHeader * - 25}px , ${yRelativeToHeader * -25}px)`
+    document.querySelector("#circle-2").style.transform = `translate(${xRelativeToHeader * - 45}px , ${yRelativeToHeader * -45}px)`
+
+    document.querySelector("#cube__image_1").style.transform = `translate(${xRelativeToHeader * -70}px, ${yRelativeToHeader * -70}px)`
+    document.querySelector("#cube__image_2").style.transform = `translate(${xRelativeToHeader * -80}px, ${yRelativeToHeader * -80}px)`
+    })
 
 </script>
 </html>
