@@ -23,7 +23,7 @@
         </button>
     </section>
 
-    <section class="header">
+    <section class="header hidden-area">
         <span class="circle" id="circle-1"></span>
         <span class="circle" id="circle-2"></span>
         <img id="cube__image_1" src="front_mini.png" alt="my_img" class="cube__image">
@@ -33,6 +33,21 @@
             <div>JUST HTML</div>
         </h1>
     </section>
+
+    <section class="poster hidden-area">
+        <div class="poster__parallax">
+            <div id="poster-image_wrapper_1" class="poster-image_wrapper">
+                <img id="poster-image_1" src="./NewJeans1.jpg" alt="1" class="poster-image">
+            </div>
+            <div id="poster-image_wrapper_2" class="poster-image_wrapper">
+                <img id="poster-image_2" src="./NewJeans2.jpg" alt="2" class="poster-image">
+            </div>
+            <div id="poster-image_wrapper_3" class="poster-image_wrapper">
+                <img id="poster-image_3" src="./NewJeans3.jpg" alt="3" class="poster-image">
+            </div>
+        </div>
+    </section>
+
 
 </body>
 
@@ -100,6 +115,12 @@
             if(scale >= 1 + preloaderHideThresHold) {
                 document.querySelector(".preloader").classList.add("hidden-area")
 
+                const poster = document.querySelector(".poster")
+
+                poster.classList.remove("hidden-area")
+                header.classList.remove("hidden-area")
+
+                poster.classList.add("shown-area")
                 header.classList.add("shown-area")
 
                 clearInterval(intervalId)
@@ -122,7 +143,7 @@ preloaderBtn.addEventListener("mouseup", ()=> {
     }, 10)
 })
 
-header.addEventListener("mousemove", (e) => {
+    header.addEventListener("mousemove", (e) => {
     const xRelativeToHeader = e.clientX / header.clientWidth
     const yRelativeToHeader = e.clientY / header.clientHeight
 
@@ -133,6 +154,29 @@ header.addEventListener("mousemove", (e) => {
     document.querySelector("#cube__image_1").style.transform = `translate(${xRelativeToHeader * -70}px, ${yRelativeToHeader * -70}px)`
     document.querySelector("#cube__image_2").style.transform = `translate(${xRelativeToHeader * -80}px, ${yRelativeToHeader * -80}px)`
     })
+
+    
+    const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("poster-image_state_visible")
+      } 
+    })
+  }, { threshold: 0.2 })
+
+  document.querySelectorAll(".poster-image_wrapper").forEach((poster) => {
+    observer.observe(poster)
+  })
+
+  const posterParallax = document.querySelector(".poster__parallax")
+
+  posterParallax.addEventListener("mousemove", (e) => {
+    const xRelativeToPosterParallax = e.clientX / posterParallax.clientWidth
+    const yRelativeToPosterParallax = e.clientY / posterParallax.clientHeight
+
+    document.querySelector("#poster-image_wrapper_2").style.transform = `translate(${xRelativeToPosterParallax * -40}px, ${yRelativeToPosterParallax * -40}px)`
+    document.querySelector("#poster-image_wrapper_3").style.transform = `translate(${xRelativeToPosterParallax * 40}px, ${yRelativeToPosterParallax * 40}px)`
+  })
 
 </script>
 </html>
