@@ -2,12 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./index.css">
 </head>
 <body>
     <canvas></canvas>
+
+    <svg>
+        <defs>
+          <filter id="gooey">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="40" result="blur1" />
+            <feColorMatrix in="blur1" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -23"/>
+          </filter>
+        </defs>
+      </svg>
+    
     <script type="module" src="./index.js"></script>
 </body>
 </html>
