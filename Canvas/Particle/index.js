@@ -3,17 +3,71 @@ const ctx = canvas.getContext('2d')
 const dpr = window.devicePixelRatio 
 //dpr이 1 이면 1px에 정사각형 1개가 들어가 있는 그림
 //dpr이 2 이면 1px에 정사각형 4개가 들어가 있는 그림 <-- 더 선명함함 
+let canvasWidth = innerWidth
+let canvasHeight = innerHeight
+let particles
+let TOTAL
 
-const canvasWidth = innerWidth
-const canvasHeight = innerHeight
+function init(){
+    canvasWidth = innerWidth
+    canvasHeight = innerHeight
+    
+    canvas.style.width = canvasWidth + 'px'
+    canvas.style.height = canvasHeight + 'px'
+    
+    canvas.width = canvasWidth * dpr
+    canvas.height = canvasHeight * dpr
+    ctx.scale(dpr,dpr)
+    //따라서 canvas 기존 가로 세로 값에 dpr을 곱하고 ctx.scale(dpr,dpr)
+    
+    particles = []
+    TOTAL = canvasWidth / 20
 
-canvas.style.width = canvasWidth + 'px'
-canvas.style.height = canvasHeight + 'px'
+for (let i = 0; i < TOTAL; i++){
+    const x = randomNumBetween(0, canvasWidth)
+    const y = randomNumBetween(0, canvasHeight)
+    const vy = randomNumBetween(1,5)
+    const radius = randomNumBetween(50 , 100)
+    const particle = new Particle(x, y, radius, vy)
+    particles.push(particle)
+}
 
-canvas.width = canvasWidth * dpr
-canvas.height = canvasHeight * dpr
-ctx.scale(dpr,dpr)
-//따라서 canvas 기존 가로 세로 값에 dpr을 곱하고 ctx.scale(dpr,dpr)
+
+}
+
+
+const feGaussianBlur = document.querySelector('feGaussianBlur')
+const feColorMatrix = document.querySelector('feColorMatrix')
+
+const controls = new function () {
+    this.blurValue = 40
+    this.alphaChannel = 100
+    this.alphaOffset = -23
+    this.acc = 1.02
+}
+
+let gui = new dat.GUI()
+
+const f1 = gui.addFolder('Gooey Effect')
+f1.open() //폴더 열린채채 
+
+f1.add(controls, 'blurValue', 0, 100).onChange(value => {
+    feGaussianBlur.setAttribute('stdDeviation', value)
+})
+
+f1.add(controls, 'alphaChannel', 1, 200).onChange(value => {
+    feColorMatrix.setAttribute('values', `1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${value} ${controls.alphaOffset}`)
+})
+
+f1.add(controls, 'alphaOffset', -40, 40).onChange(value => {
+    feColorMatrix.setAttribute('values', `1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${controls.alphaChannel}  ${value}`)
+})
+
+f1.add(controls, 'acc', 0.9, 1.1, 0.01).onChange(value => {
+    particles.forEach(particle => particle.acc = value)
+})
+
+
 
 class Particle {
     constructor(x, y, radius, vy) {
@@ -40,21 +94,10 @@ const x = 100
 const y = 100
 const radius = 50
 const particle = new Particle(x,y,radius)
-const TOTAL = 50
+
 const randomNumBetween = (min, max) => {
     return Math.random() * (max - min + 1) + min
 }
-let particles = []
-
-for (let i = 0; i < TOTAL; i++){
-    const x = randomNumBetween(0, canvasWidth)
-    const y = randomNumBetween(0, canvasHeight)
-    const vy = randomNumBetween(1,5)
-    const radius = randomNumBetween(50 , 100)
-    const particle = new Particle(x, y, radius, vy)
-    particles.push(particle)
-}
-
 
 let interval = 1000/ 60
 let now, delta
@@ -83,4 +126,11 @@ function animate() {
     then = now - (delta % interval)
 }
 
-animate()
+window.addEventListener('load',()=> {
+    init()
+    animate()
+})
+
+window.addEventListener('resize', () => {
+    init()
+})
