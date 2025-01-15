@@ -1,9 +1,12 @@
+import Particle from "./Js/Particle.js"
+
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 const dpr = window.devicePixelRatio > 1 ? 2 : 1
 let canvasWidth, canvasHeight
 const interval = 1000 / 60
 
+const particles = []
 
 function init(){
     canvasWidth = innerWidth
@@ -13,6 +16,13 @@ function init(){
     canvas.width = canvasWidth * dpr
     canvas.height = canvasHeight * dpr
     ctx.scale(dpr, dpr)
+
+}
+
+function confetti({ x, y, count, deg }) {
+    for(let i = 0; i < count; i++){
+        particles.push(new Particle(x,y,deg))
+    }
 }
 
 function render() {
@@ -25,10 +35,12 @@ function render() {
         delta = now - then
 
         if(delta < interval) return
-        
-        ctx.fillStyle = 'white'
-        ctx.fillRect(200, 200, 50, 50)
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
+        for(let i = particles.length -1; i >= 0; i--){
+            particles[i].update()
+            particles[i].draw(ctx)
+        }
 
         then = now - (delta % interval)
     }
@@ -41,3 +53,12 @@ window.addEventListener('load', () => {
 })
 
 window.addEventListener('resize', init)
+
+window.addEventListener('click', () => {
+    confetti({
+        x: 0,
+        y: canvasHeight / 2,
+        count: 10,
+        deg: -50
+    })
+})
