@@ -19,9 +19,9 @@ function init(){
 
 }
 
-function confetti({ x, y, count, deg }) {
+function confetti({ x, y, count, deg, colors}) {
     for(let i = 0; i < count; i++){
-        particles.push(new Particle(x,y,deg))
+        particles.push(new Particle(x,y,deg, colors))
     }
 }
 
@@ -40,8 +40,11 @@ function render() {
         for(let i = particles.length -1; i >= 0; i--){
             particles[i].update()
             particles[i].draw(ctx)
-        }
 
+            if(particles[i].opacity < 0){
+                particles.splice(i,1)
+            }
+        }
         then = now - (delta % interval)
     }
     requestAnimationFrame(frame)
@@ -57,8 +60,9 @@ window.addEventListener('resize', init)
 window.addEventListener('click', () => {
     confetti({
         x: 0,
-        y: canvasHeight / 2,
-        count: 10,
-        deg: -50
+        y: 0.5,
+        count: 50,
+        deg: -50,
+        colors: ["#FF0000"]
     })
 })

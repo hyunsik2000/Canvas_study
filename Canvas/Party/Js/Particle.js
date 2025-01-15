@@ -1,11 +1,11 @@
-import { randomNumBetween } from "./Utils.js"
+import { hexToRgb, randomNumBetween } from "./Utils.js"
 
 export default class Particle {
-    constructor(x,y, deg){
+    constructor(x,y, deg, colors){
         this.angle = Math.PI /180 * randomNumBetween(deg - 30, deg + 30)
         this.r = randomNumBetween(10, 30)
-        this.x = x
-        this.y = y
+        this.x = x * innerWidth
+        this.y = y * innerHeight
 
         this.vx = this.r * Math.cos(this.angle)
         this.vy = this.r * Math.sin(this.angle)
@@ -13,8 +13,21 @@ export default class Particle {
         this.friction = 0.97
         this.gravity = 0.4
 
-        this.width = 30
-        this.height = 30
+        this.width = 12
+        this.height = 12
+
+        this.opacity = 1
+
+        this.widthDelta = randomNumBetween(0,360)
+        this.heightDelta = randomNumBetween(0,360)
+
+        this.rotation = randomNumBetween(0,360)
+        this.rotationDelta = randomNumBetween(-1, 1)
+
+        this.colors = colors || ['#FF577F', '#FF884B', '#FFD384', '#FFF9B0']
+        this.color = hexToRgb(
+            this.colors[Math.floor(randomNumBetween(0, this.colors.length - 1))]
+        )
     }
     update() {
         this.vy += this.gravity
@@ -25,9 +38,25 @@ export default class Particle {
         this.x += this.vx
         this.y += this.vy
         
+        this.opacity -= 0.01
+
+        this.widthDelta += randomNumBetween(2,10)
+        this.heightDelta += randomNumBetween(2,10)
+
+        this.rotation += this.rotationDelta
     }
     draw(ctx) {
-        ctx.fillStyle = 'white'
-        ctx.fillRect(this.x,this.y,this.width, this.height)
+        ctx.translate(this.x + this.width * 2,this.y + this.height * 2)
+        ctx.rotate(Math.PI/ 180 * this.rotation)
+        ctx.translate(-this.x - this.width, -this.y - this.height)
+
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`
+        ctx.fillRect(
+            this.x,
+            this.y,
+            this.width * Math.cos(Math.PI / 180 * this.widthDelta),
+            this.height * Math.sin(Math.PI / 180 * this.heightDelta)
+        )
+        ctx.resetTransform()
     }
 }
