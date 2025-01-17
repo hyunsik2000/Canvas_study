@@ -1,6 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap');
 @import './reset.css';
 
 html, body {
-    box-sizing: border-box;
-    border: 1px solid red;
+    --color-border: #938F87;
+    --color-bg: #C7C2B8;
+    --color-text: #1B1B19;
+
+    --border01: 1px solid var(--color-border);
+    --border02: 6px double var(--color-border);
+
+    font-family: "Anton", "Noto Sans KR", serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+
+    overflow: hidden;
 }
