@@ -1,3 +1,5 @@
+import Background from "./Background.js"
+
 export default class App {
     static canvas = document.querySelector('canvas')
     static ctx = App.canvas.getContext('2d')
@@ -7,24 +9,26 @@ export default class App {
     static height = 768
 
     constructor() {
+        this.backgrounds = [
+            new Background({img : document.querySelector('#bg3-img'), speed: -1}),
+            new Background({img : document.querySelector('#bg2-img'), speed: -2}),
+            new Background({img : document.querySelector('#bg1-img'), speed: -4}),
+        ]
+
         window.addEventListener('resize', this.resize.bind(this)) //알아두기
-        console.log(1)
     }
 
     resize() {
-        console.log(2)
         App.canvas.width = App.width * App.dpr
         App.canvas.height = App.height * App.dpr
-        App.ctx.scale(App.dpr,App.dpr)
+        App.ctx.scale(App.dpr, App.dpr)
 
-        const width = innerWidth > innerHeight ? innerHeight * 0.9 : innerWidth * 0.9
-
+        const width = innerWidth > innerHeight ? innerHeight * 0.9: innerWidth * 0.9
         App.canvas.style.width = width + 'px'
         App.canvas.style.height = width * (3 / 4) + 'px'
     }
 
     render() {
-        console.log(3)
         let now, delta;
         let then = Date.now()
         const frame = () => {
@@ -32,8 +36,13 @@ export default class App {
             now = Date.now()
             delta = now - then
             if (delta < App.interval) return
+
             App.ctx.clearRect(0, 0, App.width, App.height)
-            App.ctx.fillRect(50, 50, 100, 100)
+            
+            this.backgrounds.forEach((background, index) => {
+                background.update();
+                background.draw();
+            })
 
             then = now - (delta % App.interval)
         }
