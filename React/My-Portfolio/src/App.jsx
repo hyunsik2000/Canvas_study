@@ -1,4 +1,5 @@
 import ArrowImg from './Asset/arrow.svg';
+import Nudake from './Containers/Nudake';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           </ul>
         </header>
         <main>
-          <div>canvas</div>
+          <div><Nudake /></div>
         </main>
       </section>
       <section className="section-2">
