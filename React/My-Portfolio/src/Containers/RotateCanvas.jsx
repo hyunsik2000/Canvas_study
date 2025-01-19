@@ -32,17 +32,25 @@ const RotateCanvas = () => {
         let gravityDeg = 0
 
         let engine, render, runner, mouse, mouseConstraint
+        let observer
 
         initScene()
         initMouse()
+        initIntersectionObserver()
         initGround()
         initImageBoxes()
 
-        // Events.on(runner, 'tick', () => {
-        //     gravityDeg += 0.5
-        //     engine.world.gravity.x = gravityPower * Math.cos(Math.PI / 180 * gravityDeg)
-        //     engine.world.gravity.y = gravityPower * Math.sin(Math.PI / 180 * gravityDeg)
-        // })
+        Events.on(mouseConstraint, "mousedown", () => {
+            const newSelected = mouseConstraint.body && data[mouseConstraint.body.label]
+            newSelected && setSelected(newSelected)
+            console.log(selected)
+        })
+
+        Events.on(runner, 'tick', () => {
+            gravityDeg += 0.5
+            engine.world.gravity.x = gravityPower * Math.cos(Math.PI / 180 * gravityDeg)
+            engine.world.gravity.y = gravityPower * Math.sin(Math.PI / 180 * gravityDeg)
+        })
 
         function initScene() {
             engine = Engine.create()
@@ -68,6 +76,26 @@ const RotateCanvas = () => {
                 mouse: mouse
             })
             Composite.add(engine.world, mouseConstraint)
+
+            canvas.removeEventListener('wheel', mouse.wheel)
+            canvas.removeEventListener('DOMMouseScroll', mouse.wheel)
+        }
+        function initIntersectionObserver() {
+            const options = {
+                threshold: 0.1
+            }
+            observer = new IntersectionObserver((entries) => {
+                const canvasEntry = entries[0]
+                if(canvasEntry.isIntersecting){
+                   runner.enabled = true
+                   Render.run(render) 
+                } else{
+                    runner.enabled = false
+                    Render.stop(render)
+                }
+            }, options)
+
+            observer.observe(canvas)
         }
         function initGround() {
             const segments = 32
@@ -89,27 +117,43 @@ const RotateCanvas = () => {
             const t1 = { w: 250 * scale, h: 250 * scale}
             const t2 = { w: 732 * scale, h: 144 * scale}
             addRect(cw / 2, ch / 2, t1.w, t1.h, {
+                label: 'JS',
                 chamfer: {radius: 20},
                 render : { sprite : { texture: IconJS, xScale: scale, yScale: scale }}})
             addRect(cw / 2 - t1.w, ch / 2, t1.w, t1.h, {
+                label: 'CSS',
                 chamfer: {radius: 20},
                 render : { sprite : { texture: IconCSS, xScale: scale, yScale: scale }}})
             addRect(cw / 2 + t1.w, ch / 2, t1.w, t1.h, {
+                label: 'HTML',
                 chamfer: {radius: 20},
                 render : { sprite : { texture: IconHTML, xScale: scale, yScale: scale }}})
             addRect(cw / 2, ch / 2 + t1.h, t1.w, t1.h, {
+                label: 'THREE',
                 chamfer: {radius: 20},
                render : { sprite : { texture: IconTHREE, xScale: scale, yScale: scale }}})
             addRect(cw / 2, ch / 2 + t1.h, t1.w, t1.h, {
+                label: 'REACT',
                 chamfer: {radius: 75},
                 render : { sprite : { texture: IconREACT, xScale: scale, yScale: scale }}})          
             addRect(cw / 2, ch / 2 - t2.h, t2.w, t2.h, {
+                label: 'AFRAME',
                 chamfer: {radius: 20},
                 render : { sprite : { texture: IconAFRAME, xScale: scale, yScale: scale }}})          
         }
         function addRect(x, y, w, h, options = {}) {
             const rect = Bodies.rectangle(x, y, w, h, options)
             Composite.add(engine.world, rect)
+        }
+
+        return () => {
+            observer.unobserve(canvas)
+
+            Composite.clear(engine.world)
+            Mouse.clearSourceEvents(mouse)
+            Runner.stop(runner)
+            Render.stop(render)
+            Engine.clear(engine)
         }
     },[])
 
@@ -118,7 +162,18 @@ const RotateCanvas = () => {
         <canvas ref={canvasRef}></canvas>
         <aside>
           <h1>{selected.title}</h1>
-          <h1>👀👀👀👀👀</h1>
+          <h2>
+            {Array(5)
+                .fill(null)
+                .map((_, i) => (
+            <span
+            key={i}
+            style={{ filter: `grayscale(${selected.level <= i ? 1 : 0})` }}
+            > 
+            &#11088;
+        </span>
+    ))}
+</h2>
           <p>{selected.desc}</p>
         </aside>
         </div>

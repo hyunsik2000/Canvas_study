@@ -105,7 +105,7 @@ const Nudake = () => {
 
         const checkPercent = throttle(() => {
             const percent = getScrupedPercent(ctx, canvasWidth, canvasHeight)
-            if (percent > 30){
+            if (percent > 70){
                 imageIndex  = (imageIndex + 1) % imageSrcs.length
                 drawImage()
             }
