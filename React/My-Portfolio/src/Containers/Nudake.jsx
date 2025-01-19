@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import lodash from 'lodash/throttle';
+import throttle from 'lodash/throttle';
+import gsap from 'gsap';
 import "../Style/Containers/Nudake.css";
 import image1 from "../Asset/newjeans1.jpg";
 import image2 from "../Asset/newjeans2.jpg";
 import image3 from "../Asset/newjeans3.jpg";
-import { getDistance, getAngle, getScrupedPercent } from "../Utils/Utils";
-import throttle from "lodash/throttle";
+import { getDistance, getAngle, getScrupedPercent, drawImageCenter } from "../Utils/Utils";
 
 const Nudake = () => {
     const canvasRef = useRef(null)
@@ -16,8 +16,10 @@ const Nudake = () => {
         const ctx = canvas.getContext('2d')
 
         const imageSrcs = [image1, image2, image3]
+        const loadedImages = []
         let imageIndex = 0
         let prevPos = { x: 0, y: 0}
+        let isChanging = false
 
         let canvasWidth, canvasHeight
 
@@ -29,41 +31,61 @@ const Nudake = () => {
             canvas.width = canvasWidth
             canvas.height = canvasHeight
 
-            drawImage()
+            preloadImage().then(()=> drawImage())
+        }
+
+        function preloadImage() {
+            return new Promise((resolve, reject) => {
+                let loaded = 0
+                imageSrcs.forEach(src => {
+                    const img = new Image()
+                    img.src = src
+                    img.onload = () => {
+                        loaded += 1
+                        loadedImages.push(img)
+                        if (loaded === imageSrcs.length) return resolve()
+                    }
+                })
+            })
         }
 
         function drawImage(){
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-            const image = new Image()
-            image.src = imageSrcs[imageIndex]
-            image.onload = () => {
-            ctx.globalCompositeOperation = 'source-over' //globalCompositeOperation 에 대해 문서를 한번 훑어보자
-            ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight)
+            isChanging = true
+            const image = loadedImages[imageIndex]
+            const firstDrawing = ctx.globalCompositeOperation === 'source-over'
 
-            const nextImage = imageSrcs[(imageIndex + 1) % imageSrcs.length]
-            canvasParent.style.backgroundImage = `url(${imageSrcs[nextImage]})`
-            }
+            gsap.to(canvas, { opacity: 0, duration: firstDrawing ? 0 : 1, onComplete: () => {
+                canvas.style.opacity = 1
+                ctx.globalCompositeOperation = 'source-over' //globalCompositeOperation 에 대해 문서를 한번 훑어보자
+                drawImageCenter(canvas, ctx, image)
+    
+                const nextImage = imageSrcs[(imageIndex + 1) % imageSrcs.length]
+                canvasParent.style.backgroundImage = `url(${nextImage})`
+                prevPos = null
+
+                isChanging = false
+            } })
         }
 
         function onMouseDown(e) {
-            console.log("onMouseDown")
+            if(isChanging) return
             window.addEventListener('mouseup', onMouseUp)
             window.addEventListener('mousedown', onMouseDown)
             prevPos = {x: e.offsetX, y: e.offsetY}
         }
         function onMouseUp() {
-            console.log("onMouseUp")
             window.removeEventListener('mouseup', onMouseUp)
             window.removeEventListener('mousedown', onMouseDown)
         }
         function onMouseMove(e) {
-            console.log("onMouseMove")
+            if(isChanging) return
             drawCircles(e)
             checkPercent()
         }
 
         function drawCircles(e) {
             const nextPos = { x: e.offsetX, y: e.offsetY}
+            if(!prevPos) prevPos = nextPos
             const dist = getDistance(prevPos, nextPos)
             const angle = getAngle(prevPos, nextPos)
 
@@ -83,7 +105,7 @@ const Nudake = () => {
 
         const checkPercent = throttle(() => {
             const percent = getScrupedPercent(ctx, canvasWidth, canvasHeight)
-            if (percent > 50){
+            if (percent > 30){
                 imageIndex  = (imageIndex + 1) % imageSrcs.length
                 drawImage()
             }
